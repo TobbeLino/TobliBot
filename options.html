@@ -1,0 +1,532 @@
+<html>
+	<head>
+		<script src="js/jquery-1.9.1.min.js" type="text/javascript"></script>
+		<script src="js/jquery.easytabs.min.js" type="text/javascript"></script>
+		<link href="css/tabs.css" media="screen" rel="stylesheet" type="text/css" />
+
+		<style>
+			body {
+				font-family: Verdana, Arial, Helvetica, sans-serif;
+				font-size:12px;
+			}
+			table.top {
+				border: 2px solid black;
+				padding: 10px;
+				width:550px;
+				background-color:#F0F0C0;
+			}
+			.outer {
+				padding:10px 15px;
+				vertical-align:top;
+			}
+			td {
+				font-size:12px;
+			}
+
+			sup {
+				font-size:70%;
+				color:red;
+				font-style:italic;
+				font-weight:bold;
+			}
+			.mono {
+				font-size:12px;
+				font-family:monospace;
+			}
+			.maxwide {
+				width:100%;
+			}
+			.r {
+				text-align:right;
+				padding-right:2px;
+			}
+			.note {
+				font-size:11px;
+				font-style:italic;
+			}
+			.info {
+				font-size:12px;
+				font-style:italic;
+			}
+			.hidden {
+				display:none;
+			}
+			.stat {
+				text-align:center;
+			}
+			.EMASettingsCell {
+				padding:4px 6px;
+				background:#FFA;
+			}
+			.experimentalRulesSettingsCell {
+				display:block;
+				padding:4px 6px;
+				background:#DDC;
+			}
+			.top{
+				vertical-align:top;
+			}
+			.smallFont {
+				font-size:10px;
+			}
+			.headline {
+				position:relative;
+				top:0px;
+				font-size:14px;
+				font-weight:bold;
+				padding-bottom:0;
+				vertical-align:top;
+			}
+			.headlineImg {
+				margin-right:10px
+			}
+			#version {
+				position:relative;
+				margin-left:20px;
+				font-size:10px;
+				font-weight:normal;
+				top:2px;
+				vertical-align:top;
+			}
+			#currencySelector {
+				margin-left:0;
+			}
+			#keepBTC {
+				margin-left:0;
+			}
+			#infoDiv {
+				background:#DDF;
+				-moz-border-radius: 25px;
+				-webkit-border-radius: 25px;
+				padding:20px;
+			}
+			.infoHead {
+				background-image:URL("help-icon.png");
+				background-repeat:no-repeat;
+				background-position:1px 2px;
+				padding-left:20px;
+				font-size:14px;
+				font-weight:bold;
+				margin-bottom:10px
+			}
+			.descrCell {
+				padding:0 0 10px 8px;
+			}
+			.settingCell {
+				vertical-align:top;
+				padding:5px 0 0 3px;
+			}
+			.lnk {
+				text-decoration:underline;
+				cursor:pointer;
+				-webkit-user-select: none;
+			}
+			sup {
+				display:none;
+			}
+		</style>
+	</head>
+
+
+	<body>
+		<table border="0" style="width:100%;max-width:1120px">
+			<tr>
+				<td class="outer" style="padding-bottom:0">
+					<table style="padding:0;margin:0">
+						<tr>
+							<td style="padding:0;margin:0">
+								<img src="robot_128.png" class="headlineImg" width=64>
+							</td>
+							<td class="headline style="padding:0;margin:0"">
+								TobliBot - A Bitcoin Trading Bot<span id="version"></span>
+								<div style="font-size:10px;font-weight:normal;margin-top:7px;">
+									If my bot makes you rich, please consider donating a fraction of your profit!<br>
+									...or, of course, also if you appreciate my work for other reasons... :)<br>
+									Bitcoin: <b>1LUqdAXvH9gbYemZKeiMrVJ5njhm6ZvKmF</b>
+								</div>
+							</td>
+						</tr>
+					</table>
+				</td>
+				<td rowspan="7" class="outer" style="padding-bottom:0;padding-top:15px;">
+					<div id="infoDiv">
+						<div class="infoHead">
+							Info/Help
+						</div>
+
+						<div id="info_general" class="info hidden" style="display:block">
+							This is an automatic Bitcoin trading bot for the MtGox exchange.<br>It currently implements two different trading strategies:<br>
+							<table cellpadding=3 style="margin-top:5px;" class="info">
+								<tr>
+									<td valign=top width=15>1)</td>
+									<td valign=top>
+										The MACD trading indicator (<a href="http://stockcharts.com/school/doku.php?id=chart_school:technical_indicators:moving_average_conve" target="_blank">read more</a>)
+									</td>
+								</tr>
+								<tr>
+									<td valign=top width=15>2)</td>
+									<td valign=top>
+										A simpler EMA indicator ("Goomboo's strategy") described by in <a href="https://bitcointalk.org/index.php?topic=60501" target="_blank">Goomboo's Journal</a>. Please read the thread to learn about the strategy used in "Simple EMA" mode.
+									</td>
+								</tr>
+							</table>
+							<br>
+							This bot started as an enhancement of the "Gox Trading Bot" that was a basic implementation of Goomboo's simple EMA strategy.<br><br><br>
+							<b>Disclaimer:</b><br>
+							The author of this bot does not take any responsiblity for any damage or loss caused by this software.
+							There can be bugs, and the bot may not perform as expected.
+							Even though the author has tested it, there are absolutely <b>NO</b> warranties!
+							Please consider testing it with a small amount of funds first, and check to the <a href="https://github.com/TobbeLino/TobliBot" target="_blank">source code</a> to see how it's working.
+						</div>
+
+						<div id="info_simpleEMA" class="info hidden" style="display:none">
+							The "Simple EMA (Goomboo's strategy)" is described in detail in this thread: <a href="https://bitcointalk.org/index.php?topic=60501" target="_blank">Goomboo's Journal</a>. Please read to learn about the strategy used in this mode.<br><br>
+
+							In "Simple EMA-mode", the bot uses the first traded price of each sample interval and calculates two Exponential Moving Averages (EMAs) from these prices - one short and one long EMA (default 10 / 21 samples)<sup> 1</sup>. The difference between these EMAs is used for detecting a trend, and the basic idea is that when the short EMA crosses above the long EMA, the bot will buy BTC, and when the short EMA crosses under the long EMA, it will sell BTC.<br><br>
+							To reduce the number of false signals, you can enter thresholds for buy/sell-signals<sup> 2</sup> and/or make the bot wait until a number samples in a row indicates the same trend<sup> 3</sup>.<br><br>
+
+
+							The bot will buy BTC for the <u>whole amount of fiat money</u>, or sell <u>all BTC, minus the value of "Keep BTC"</u> entered on the "MtGox account" tab at the given MtGox account when the difference between the EMA values<sup> 1</sup> (in %) stays above/below the buy/sell thresholds<sup> 2</sup> for as many samples as selected in "Buy/Sell after X samples"<sup> 3</sup>.<br><br>
+
+							<div style="font-size:11px">
+								The "Simple EMA-strategy" is equal to a simplified version of the MACD strategy, using the MACD-line's zero-crossing as an indicator.<br><br>
+							</div>
+
+							<hr>
+							<div class="note stat">
+								As this bot started as an enhancement of the "Gox Trading Bot" extension, I would like to leave this text from the original bot:<br><br>
+								If you like this extension send 0.01 BTC to 13g6zY7GJJvKEiYzTnGP8H9dEDEhYW2jFq
+							</div>
+						</div>
+
+						<div id="info_exhange" class="info hidden">
+							<div class="note">
+								<sup>1</sup>
+								Take <b>API Key</b> and <b>Secret</b> from your MtGox account. Use <b>Advanced API Key Creation</b> at <a href="https://mtgox.com/security" target="_blank">Security Center</a> page to create these values. Make sure to grant only <b>get_info</b> and <b>trade</b> access rights for this API key. The bot does not need you to be logged at the MtGox account - just setup the Key&Secret, leave the browser running and it will trade...<br><br>
+							</div>
+						</div>
+
+
+	<!--
+						<div class="note stat" style="background-color:#F0F0C0;padding:8px 0px; margin-top:10px; line-height:15px">
+							Modified and enhanced by TobbeLino<br><br>
+							Download the latest version at <a href="https://github.com/TobbeLino/GoxTradingBotTobli">https://github.com/TobbeLino/GoxTradingBotTobli</a><br><br>
+							If you like my modifications, please make a donation! :) <b>1LUqdAXvH9gbYemZKeiMrVJ5njhm6ZvKmF</b>
+						</div>
+	-->
+					</div>				</td>
+			</tr>
+			<tr>
+				<td class="outer" style="height:250px;">
+					<form>
+						<div id="tab-container" class="tab-container">
+						  <ul class='etabs'>
+						    <li class='tab' id="tab1-trading"><a href="#tabs1-trading">Trading settings</a></li>
+						    <li class='tab' id="tab1-exchange"><a href="#tabs1-exchange">MtGox account</a></li>
+						    <li class='tab' id="tab1-experimental"><a href="#tabs1-experimental">Experimental</a></li>
+						  </ul>
+
+
+						  <div id="tabs1-trading" class="panel-container">
+						    <!-- Trading settings -->
+								<table cellpadding="3" cellspacing="0" width=100% >
+									<tr>
+										<td class="top settingCell">
+											<nobr>Trading enabled</nobr>
+										</td>
+										<td class="top settingCell">
+											<table cellpadding=0 cellspacing=0>
+												<tr>
+													<td class="top" style="padding-top:3px">
+														<input type="checkbox" value="true" id="tradingEnabled" style="margin-top:-3px">
+											 		</td>
+													<td class="smallFont top descrCell">
+														(uncheck to disable actual trading)
+													</td>
+												</tr>
+											</table>
+										</td>
+									</tr>
+									<tr>
+										<td class="top settingCell">
+											<nobr>Disabled on start</nobr>
+										</td>
+										<td class="top settingCell">
+											<table cellpadding=0 cellspacing=0>
+												<tr>
+													<td class="top" style="padding-top:3px">
+														<input type="checkbox" value="true" id="tradingDisabledOnStart" style="margin-top:-3px">
+											 		</td>
+													<td class="smallFont top descrCell">
+														(always start disabled to avoid instant/accidental trading)
+													</td>
+												</tr>
+											</table>
+										</td>
+									</tr>
+									<tr>
+										<td class="top settingCell">
+											Trade only after trend switches
+										</td>
+										<td class="top settingCell">
+											<table cellpadding=0 cellspacing=0>
+												<tr>
+													<td class="top" style="padding-top:3px">
+											 			<input type="checkbox" value="true" id="tradeOnlyAfterSwitch" style="margin-top:-3px">
+											 		</td>
+													<td class="smallFont top descrCell">
+														(only trade after a trend switch. I.e. when starting/enabling the bot, it will NOT start trading until the current trend turns unless the very latest sample triggered a switch.)
+													</td>
+												</tr>
+											</table>
+										</td>
+									</tr>
+									<tr>
+										<td nowrap="nowrap" style="vertical-align:top;padding-top:7px;">
+											<nobr>Sample interval</nobr>
+										</td>
+										<td>
+											<select id="tradingIntervalMinutes" class="mono">
+												<option value="1">1 minute</option>
+												<option value="5">5 minutes</option>
+												<option value="10">10 minutes</option>
+												<option value="15">15 minutes</option>
+												<option value="30">30 minutes</option>
+												<option value="45">45 minutes</option>
+												<option value="60">1 hour</option>
+												<option value="120">2 hours</option>
+												<option value="180">3 hours</option>
+												<option value="240">4 hours</option>
+												<option value="300">5 hours</option>
+												<option value="360">6 hours</option>
+												<option value="480">8 hours</option>
+												<option value="720">12 hours</option>
+												<option value="1080">18 hours</option>
+												<option value="1440">1 day</option>
+											</select>
+										</td>
+									</tr>
+									<tr>
+										<td nowrap="nowrap" style="vertical-align:top;padding-top:7px;">
+											<nobr>Show last</nobr>
+										</td>
+										<td>
+											<select id="sla" class="mono">
+												<option value="1">1 hour</option>
+												<option value="2">2 hours</option>
+												<option value="3">3 hours</option>
+												<option value="6">6 hours</option>
+												<option value="12">12 hours</option>
+												<option value="24">1 day</option>
+												<option value="48">2 days</option>
+												<option value="72">3 days</option>
+												<option value="96">4 days</option>
+												<option value="120">5 days</option>
+												<option value="240">10 days</option>
+												<option value="480">20 days</option>
+												<option value="720">30 days</option>
+												<option value="1200">50 days</option>
+												<option value="2400">100 days</option>
+												<option value="0">Max</option>
+											</select> (max <span id="maxVisibleSamples"></span> samples)
+										</td>
+									</tr>
+									<tr>
+										<td colspan="2" style="padding-top:1px;height:10px"></td>
+									</tr>
+									
+									<tr>
+										<td class="EMASettingsCell">
+											<nobr>Trading strategy:</nobr>
+										</td>
+										<td class="EMASettingsCell" style="padding-left:3px">
+											<table cellpadding=0 cellspacing=0 width=100%>
+												<tr>
+													<td class="top" style="padding-top:3px">
+														<select id="strategy" class="mono" style="min-width:260px;">
+															<option value="1">MACD (MACD/signal line crossovers) </option>
+															<option value="0">Simple EMA (Goomboo's strategy) </option>
+														</select>
+														<span class="infoHead lnk" id="strategyHelpLink" style="width:20px;height:20px;margin:2px 0 0 10px"></span>
+													</td>
+												</tr>
+											</table>
+										</td>
+									</tr>
+									<tr>
+										<td class="EMASettingsCell" nowrap="nowrap">
+											<nobr>EMA settings:</nobr>
+										</td>
+										<td class="EMASettingsCell">
+											EMA(<input type="text" size="2" maxlength="2" id="emas" class="mono r">) /
+											EMA(<input type="text" size="2" maxlength="2" id="emal" class="mono r">) <sup> 1</sup>
+											<span id="emaMACDSpan" style="margin-left:23px;display:none">MACD-EMA(<input type="text" size="2" maxlength="2" id="emaMACD" class="mono r">)</span>
+										</td>
+									</tr>
+									<tr>
+										<td class="EMASettingsCell" colspan="2" >
+											<table cellpadding=0 cellspacing=0>
+												<tr>
+													<td width="200">
+														Buy threshold: <input type="text" size="4" maxlength="4" id="buy_tras" class="mono r">%<sup> 2</sup>
+													</td>
+													<td>
+														Sell threshold: -<input type="text" size="4" maxlength="4" id="sell_tras" class="mono r">%<sup> 2</sup>
+													</td>
+												</tr>
+											</table>
+										</td>
+									</tr>
+									<tr>
+										<td class="EMASettingsCell" colspan="2">
+											<table cellpadding=0 cellspacing=0 width=100%>
+												<tr>
+													<td width="200">Buy after
+														<select id="tickCountBuy" class="mono">
+															<option value="1">1 sample</option>
+															<option value="2">2 samples</option>
+															<option value="3">3 samples</option>
+															<option value="4">4 samples</option>
+															<option value="5">5 samples</option>
+														</select><sup> 3</sup>
+													</td>
+													<td>Sell after
+														<select id="tickCountSell" class="mono">
+															<option value="1">1 sample</option>
+															<option value="2">2 samples</option>
+															<option value="3">3 samples</option>
+															<option value="4">4 samples</option>
+															<option value="5">5 samples</option>
+														</select><sup> 3</sup
+													></td>
+													<td style="text-align:right;padding-right:3px" class="smallFont">
+														(<span id="strategyDefaultsLink" class="smallFont lnk">strategy defaults</span>)
+													</td>
+												</tr>
+											</table>
+										</td>
+									</tr>
+								</table>
+						  </div>
+
+
+
+						  <div id="tabs1-exchange" class="panel-container">
+						    <!-- MtGox account -->
+    						<table cellpadding="3" cellspacing="0" width=100%>
+									<tr>
+										<td nowrap="nowrap" style="vertical-align:top;padding-top:5px;">
+											MtGox API Key<sup> 1</sup>
+										</td>
+										<td>
+											<input type="text" size="36" id="apikey" class="mono maxwide">
+										</td>
+									</tr>
+
+									<tr>
+										<td nowrap="nowrap" style="vertical-align:top;padding-top:5px;width:100px">
+									 		<nobr>MtGox API Secret<sup> 1</sup>&nbsp;</nobr>
+										</td>
+									 	<td>
+											<textarea id="apisec" cols="36" rows="3" class="mono maxwide"></textarea>
+										</td>
+									</tr>
+									<tr>
+										<td nowrap="nowrap" style="vertical-align:top;text-align:right;padding-top:7px;padding-right:7px;width:100px">
+											<nobr>Trade in fiat currency:</nobr>
+										</td>
+										<td>
+											<select id="currencySelector" class="mono">
+												<option value="USD">USD</option>
+												<option value="AUD">AUD</option>
+												<option value="CAD">CAD</option>
+												<option value="CHF">CHF</option>
+												<option value="CNY">CNY</option>
+												<option value="DKK">DKK</option>
+												<option value="EUR">EUR</option>
+												<option value="GBP">GBP</option>
+												<option value="HKD">HKD</option>
+												<option value="JPY">JPY</option>
+												<option value="NZD">NZD</option>
+												<option value="PLN">PLN</option>
+												<option value="RUB">RUB</option>
+												<option value="SEK">SEK</option>
+												<option value="SGD">SGD</option>
+												<option value="THB">THB</option>
+												<option value="NOK">NOK</option>
+												<option value="CZK">CZK</option>
+											</select>
+										</td>
+									</tr>
+									<tr>
+										<td nowrap="nowrap" style="vertical-align:top;text-align:right;padding-top:7px;padding-right:7px;width:100px">
+											Keep BTC:
+										</td>
+										<td>
+											<input type="text" size="10" id="keepBTC" class="mono r">
+										</td>
+									</tr>
+<!--
+									<tr>
+										<td>
+											Keep Fiat: <input type="text" size="6" id="keepFiat" class="mono">
+										</td>
+									</tr>
+-->
+								</table>
+						  </div>
+
+
+
+						  <div id="tabs1-experimental" class="panel-container">
+						    <!-- Experimental settings -->
+						    <div style="padding-top:8px;">
+						    	Experimantal settings - <span style="display:inline-block;background:#FF0000;color:#FFF;padding:2px 5px; margin:0 5px">Use at your own risk!!</span>
+						     </div>
+    						<table cellpadding="3" cellspacing="0" style="margin-top:10px" >
+									<tr>
+										<td class="experimentalRulesSettingsCell" colspan="2" style="padding-top:10px;padding-bottom:7px">
+											<table style="width:100%" cellpadding=0 cellspacing=0>
+
+												<tr>
+													<td class="experimentalRulesSettingsCell top" style="padding:0">
+														<nobr>Invert EMA-strategy</nobr>
+													</td>
+													<td class="experimentalRulesSettingsCell top" >
+														 <input type="checkbox" value="true" id="inverseEMA" style="margin-top:-3px">
+													</td>
+													<td class="experimentalRulesSettingsCell smallFont top" style="padding-top:0;">
+														A.k.a. "The Crazy Ivan"! When the EMA-strategy is reversed, the bot will buy when it's supposed to sell, and sell when it should buy! :) There are absolutely NO theories supporting this strategy, however, when the market is ranging and you feel that the bot is always 180 degrees out of phase with the swings, it might work. Maybe...
+													</td>
+												</tr>
+											</table>
+										</td>
+									</tr>
+								</table>
+						  </div>
+						</div>
+					</form>
+				</td>
+			</tr>
+			<tr>
+				<td style="height:10px"></td>
+		    </tr>
+			<tr>
+				 <td align="center">
+				  <input type="button" style="width:180px;" id="butres" value="Reset to defaults">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				  <input type="submit" style="width:180px;" id="butsav" value="Apply and save changes">
+				 </td>
+		    </tr>
+			<tr>
+			  <td align="center" style="height:25px"></td>
+	      </tr>
+			<tr>
+			  <td align="center"><span style="font-size:10px;font-weight:normal;">Source code: <a href="https://github.com/TobbeLino/TobliBot" target="_blank">https://github.com/TobbeLino/TobliBot</a></span></td>
+		  </tr>
+			<tr>
+			  <td align="center">&nbsp;</td>
+		  </tr>
+		</table>
+	<script src="options.js"></script>
+	</body>
+</html>
