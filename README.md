@@ -1,5 +1,5 @@
-TobliBot - A Bitcoin Trading Bot Extension for Chrome
-=====================================================
+TobliBot - A Bitcoin Trading Bot for Chrome
+===========================================
 
 This is an automatic Bitcoin trading bot for the MtGox exchange.
 It currently implements two different trading strategies:
@@ -61,7 +61,7 @@ Installation
 1. Copy all files from github to your computer.
 2. Start Chrome and go to Options/Tools/Extensions (or just type URL: "chrome://extensions/")
 3. Click on "Load unpacked extension..." and select the folder that holds the files 
-4. The "Gox Trading Bot (Tobli)" should have been added
+4. The "TobliBot" should have been added
 5. Click "Options" to configure the bot
 
 From the extensions page in Chrome, you can also open the console to se some logging I you want:
